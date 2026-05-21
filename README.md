@@ -94,3 +94,8 @@ Voici les étapes pour lancer le projet en local sur votre machine.
   docker compose down -v
   docker compose up --build -d
   ```
+## Auteurs
+
+- Jonathan
+- Cyprien
+- Morgan
