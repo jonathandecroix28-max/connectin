@@ -17,11 +17,11 @@ WORKDIR /app
 # Copier les fichiers de dépendances
 COPY composer.json composer.lock* ./
 
-# Installer les dépendances PHP (sans scripts ni autoloader)
-RUN composer install --no-scripts --no-autoloader --no-interaction --prefer-dist
-
 # Copier tout le code de l'application
 COPY . .
+
+# Réutiliser vendor/ si le dépôt l'embarque déjà, sinon installer les dépendances
+RUN if [ ! -d vendor ]; then composer install --no-scripts --no-autoloader --no-interaction --prefer-dist; fi
 
 # Finir l'installation Composer (générer l'autoloader et exécuter les scripts)
 RUN composer dump-autoload --optimize && composer run-script post-autoload-dump --no-interaction || true
