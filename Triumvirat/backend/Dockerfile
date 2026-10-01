@@ -1,13 +1,10 @@
 FROM php:8.3-cli
 
-RUN apt-get update && apt-get install -y \
-    git \
-    unzip \
-    default-mysql-client \
-    libonig-dev \
-    libzip-dev \
-    curl \
- && docker-php-ext-install pdo pdo_mysql mbstring zip
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
+RUN apt-get update && apt-get install -y git unzip default-mysql-client curl \
+ && install-php-extensions pdo_mysql mbstring zip gd intl bcmath exif opcache \
+ && rm -rf /var/lib/apt/lists/*
 
 # Installer Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
