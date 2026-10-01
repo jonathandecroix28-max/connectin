@@ -10,7 +10,7 @@ return [
 
     'allowed_origins' => array_values(array_filter([
         env('FRONTEND_URL'),
-        'https://triumvirat-frontend.onrender.com',
+        'https://triumvirat-frontend-w59q.onrender.com/',
         'http://localhost:5173',
         'http://127.0.0.1:5173',
         'http://localhost:3000',
