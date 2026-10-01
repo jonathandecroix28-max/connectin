@@ -15,6 +15,7 @@ return [
         '127.0.0.1:8000',
         '::1',
         'triumvirat-frontend.onrender.com',
+        'triumvirat-frontend-w59q.onrender.com',
         Sanctum::currentApplicationUrlWithPort(),
     ]))),
 
