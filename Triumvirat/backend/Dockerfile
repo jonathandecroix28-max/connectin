@@ -16,16 +16,12 @@ WORKDIR /app
 
 # Copier les fichiers de dépendances
 COPY composer.json composer.lock* ./
-COPY package.json package-lock.json* ./
 
 # Installer les dépendances PHP (sans scripts ni autoloader)
-RUN composer install --no-scripts --no-autoloader
+RUN composer install --no-scripts --no-autoloader --no-interaction --prefer-dist
 
 # Copier tout le code de l'application
 COPY . .
-
-# Installer Node.js pour les assets frontend
-RUN apt-get install -y nodejs npm && npm install
 
 # Finir l'installation Composer (générer l'autoloader et exécuter les scripts)
 RUN composer dump-autoload --optimize && composer run-script post-autoload-dump --no-interaction || true
