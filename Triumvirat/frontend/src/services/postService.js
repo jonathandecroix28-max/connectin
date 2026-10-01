@@ -1,8 +1,7 @@
 import router from "../router";
 import { emitter } from "../utils/emitter.js";
 import { updateAuthState } from "../utils/authEvents.js";
-
-const API_URL = "http://localhost:8000/api";
+import { API_URL } from "../utils/api.js";
 
 // Fonction helper pour obtenir les headers avec le token
 const getHeaders = (requireAuth = true) => {

@@ -5,6 +5,7 @@ import { authState } from "../utils/authEvents.js";
 import PostByUser from "../components/PostByUser.vue";
 import precedentIcon from "../assets/precedent.png";
 import defaultCover from "../assets/cover.png";
+import { API_URL, buildStorageUrl } from "../utils/api.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -13,7 +14,6 @@ const user = ref(null);
 const loading = ref(true);
 const errorMessage = ref("");
 
-const apiUrl = "http://localhost:8000";
 const token = localStorage.getItem("token");
 
 const userId = computed(() => {
@@ -25,12 +25,12 @@ const currentUserId = computed(() => authState.value.user?.id ?? null);
 
 const coverUrl = computed(() => {
 	if (!user.value?.cover_image_path) return defaultCover;
-	return `${apiUrl}/storage/${user.value.cover_image_path}`;
+	return buildStorageUrl(user.value.cover_image_path);
 });
 
 const profilePhotoUrl = computed(() => {
 	if (!user.value?.profile_photo_path) return "";
-	return `${apiUrl}/storage/${user.value.profile_photo_path}`;
+	return buildStorageUrl(user.value.profile_photo_path);
 });
 
 const redirectIfOwnProfile = () => {
@@ -56,7 +56,7 @@ const fetchUser = async () => {
 	try {
 		loading.value = true;
 		errorMessage.value = "";
-		const response = await fetch(`${apiUrl}/api/users/${userId.value}`, {
+		const response = await fetch(`${API_URL}/users/${userId.value}`, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 				Accept: "application/json",

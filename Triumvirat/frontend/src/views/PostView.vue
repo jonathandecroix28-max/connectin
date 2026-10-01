@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { postService } from "../services/postService";
+import { buildStorageUrl } from "../utils/api.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -21,7 +22,7 @@ const getAvatarUrl = (user) => {
 		return `https://ui-avatars.com/api/?name=Anonyme&background=random&color=fff&rounded=true&size=128&bold=true`;
 	if (user.profile_photo_path) {
 		if (user.profile_photo_path.startsWith("http")) return user.profile_photo_path;
-		return `http://localhost:8000/storage/${user.profile_photo_path}`;
+		return buildStorageUrl(user.profile_photo_path);
 	}
 	const name = user.username || "Anonyme";
 	return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&rounded=true&size=128&bold=true`;
@@ -30,7 +31,7 @@ const getAvatarUrl = (user) => {
 const formatUrl = (path) => {
 	if (!path) return null;
 	if (path.startsWith("http")) return path;
-	return `http://localhost:8000/storage/${path}`;
+	return buildStorageUrl(path);
 };
 
 const fetchPost = async () => {

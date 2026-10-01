@@ -1,7 +1,6 @@
 import { updateAuthState } from "../utils/authEvents.js";
 import router from '../router';
-
-const API_URL = "http://localhost:8000/api";
+import { API_URL } from "../utils/api.js";
 
 export const authService = {
     async login(credentials) {

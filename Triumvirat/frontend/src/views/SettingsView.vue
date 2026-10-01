@@ -56,6 +56,7 @@
 import { computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { authState } from "../utils/authEvents.js";
+import { buildStorageUrl } from "../utils/api.js";
 
 const router = useRouter();
 
@@ -63,7 +64,7 @@ const currentUser = computed(() => authState.value?.user);
 
 const profilePhotoUrl = computed(() => {
 	if (!currentUser.value?.profile_photo_path) return null;
-	return `http://localhost:8000/storage/${currentUser.value.profile_photo_path}`;
+	return buildStorageUrl(currentUser.value.profile_photo_path);
 });
 
 onMounted(() => {

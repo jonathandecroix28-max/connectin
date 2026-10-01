@@ -67,7 +67,7 @@
 								<img
 									v-for="media in post.media"
 									:key="media.id"
-									:src="`${apiUrl}/storage/${media.url}`"
+									:src="buildStorageUrl(media.url)"
 									:alt="'Image du post ' + post.id"
 									class="w-full h-auto object-cover max-h-64 md:max-h-96 block"
 								/>
@@ -128,6 +128,7 @@ import { postService } from "../services/postService.js";
 import { authState } from "../utils/authEvents.js";
 import { formatDate } from "../utils/dateFormatter.js";
 import { ThumbsUp } from "lucide-vue-next";
+import { API_URL, buildStorageUrl } from "../utils/api.js";
 
 const props = defineProps({
 	userId: {
@@ -144,12 +145,11 @@ const isLiking = ref({});
 
 const currentUser = computed(() => authState.value.user);
 
-const apiUrl = "http://localhost:8000";
 const token = localStorage.getItem("token");
 
 const fetchUser = async () => {
 	try {
-		const response = await fetch(`${apiUrl}/api/users/${props.userId}`, {
+		const response = await fetch(`${API_URL}/users/${props.userId}`, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 				Accept: "application/json",
@@ -167,7 +167,7 @@ const fetchUser = async () => {
 
 const fetchUserPosts = async () => {
 	try {
-		const response = await fetch(`${apiUrl}/api/users/${props.userId}/posts`, {
+		const response = await fetch(`${API_URL}/users/${props.userId}/posts`, {
 			headers: {
 				Authorization: `Bearer ${token}`,
 				Accept: "application/json",
@@ -185,7 +185,7 @@ const fetchUserPosts = async () => {
 
 function formatUrl(path) {
 	if (!path) return "";
-	return `${apiUrl}/storage/${path}`;
+	return buildStorageUrl(path);
 }
 
 function ensureLikes(post) {

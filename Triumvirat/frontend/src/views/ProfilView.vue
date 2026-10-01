@@ -4,6 +4,7 @@ import { authService } from "../services/authService";
 import PostByUser from "../components/PostByUser.vue";
 import precedentIcon from "../assets/precedent.png";
 import defaultCover from "../assets/cover.png";
+import { buildStorageUrl } from "../utils/api.js";
 
 const user = ref(null);
 const currentUser = ref(null);
@@ -17,7 +18,6 @@ const coverImageFile = ref(null);
 const profilePhotoPreviewUrl = ref("");
 const coverImagePreviewUrl = ref("");
 const uploadProgress = ref(0);
-const apiUrl = "http://localhost:8000";
 const profileInputRef = ref(null);
 const coverInputRef = ref(null);
 
@@ -221,7 +221,7 @@ const triggerCoverInput = () => {
 						coverImagePreviewUrl
 							? coverImagePreviewUrl
 							: user.cover_image_path
-								? `${apiUrl}/storage/${user.cover_image_path}`
+								? buildStorageUrl(user.cover_image_path)
 								: defaultCover
 					"
 					alt=""
@@ -252,14 +252,13 @@ const triggerCoverInput = () => {
 				class="group relative block rounded-full"
 				:class="isEditing && !saving ? 'cursor-pointer' : 'cursor-default'"
 				:disabled="!isEditing || saving"
-				@click="triggerProfileInput"
 			>
 				<div
 					class="w-24 h-24 md:w-44 md:h-44 bg-amber-100 flex items-center rounded-full justify-center text-black font-bold overflow-hidden border-4 border-white shadow-sm"
 				>
 					<img
 						v-if="profilePhotoPreviewUrl || user?.profile_photo_path"
-						:src="profilePhotoPreviewUrl || `${apiUrl}/storage/${user.profile_photo_path}`"
+						:src="profilePhotoPreviewUrl || buildStorageUrl(user.profile_photo_path)"
 						class="w-full h-full object-cover"
 					/>
 					<span v-else class="text-3xl md:text-6xl font-bold text-blue-600 uppercase">

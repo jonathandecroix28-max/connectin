@@ -19,28 +19,32 @@ if [ ! -f config/cors.php ]; then
     php artisan config:publish cors
 fi
 
-# Sécurité : Générer la clé si elle est vide
-php artisan key:generate --no-interaction --force
+# Sécurité : Générer la clé seulement si elle n'est pas fournie par l'environnement
+if [ -z "$APP_KEY" ]; then
+    php artisan key:generate --no-interaction --force
+else
+    echo "APP_KEY déjà fournie, conservation de la clé existante."
+fi
 
 # Nettoyage des caches (vital pour Docker)
 echo "Nettoyage des caches Laravel..."
 php artisan config:clear
 php artisan cache:clear
 
-# Attendre MySQL
-echo "Attente de MySQL..."
-# On utilise les variables pour être sûr que le test de connexion 
-# correspond à ce que Laravel va utiliser
-until php -r "new PDO('mysql:host=db;dbname=' . \$_ENV['DB_DATABASE'], \$_ENV['DB_USERNAME'], \$_ENV['DB_PASSWORD']);" 2>/dev/null; do
-  echo "Attente de la base de données..."
-  sleep 2
-done
+# Attendre la base si elle est définie
+if [ -n "$DB_HOST" ]; then
+    echo "Attente de la base de données sur $DB_HOST..."
+    until php -r "new PDO('mysql:host=' . getenv('DB_HOST') . ';port=' . getenv('DB_PORT') . ';dbname=' . getenv('DB_DATABASE'), getenv('DB_USERNAME'), getenv('DB_PASSWORD'));" 2>/dev/null; do
+        echo "Attente de la base de données..."
+        sleep 2
+    done
+fi
 
 # Exécution des migrations
 echo "Lancement des migrations..."
 # On ajoute config:cache pour forcer Laravel à lire le .env tout juste créé/modifié
 php artisan config:cache
-php artisan migrate --force --database=mysql
+php artisan migrate --force --database="${DB_CONNECTION:-mysql}"
 php artisan storage:link
 
 # Lancement du serveur

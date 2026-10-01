@@ -2,6 +2,7 @@
 import { computed, ref, watch } from "vue";
 import { postService } from "../services/postService.js";
 import { Link, ThumbsUp } from "lucide-vue-next";
+import { buildStorageUrl } from "../utils/api.js";
 
 const props = defineProps({
 	post: { type: Object, required: true },
@@ -129,7 +130,7 @@ function saveEdit() {
 
 function formatUrl(path) {
 	if (!path) return "";
-	return `http://localhost:8000/storage/${path}`;
+	return buildStorageUrl(path);
 }
 </script>
 
@@ -257,7 +258,7 @@ function formatUrl(path) {
 
 			<div v-if="post.media && post.media.length > 0" class="rounded-xl overflow-hidden mt-4">
 				<img
-					:src="`http://localhost:8000/storage/${post.media[0].url}`"
+					:src="buildStorageUrl(post.media[0].url)"
 					class="w-full h-auto object-cover max-h-64 md:max-h-96"
 				/>
 			</div>

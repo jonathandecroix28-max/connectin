@@ -3,6 +3,7 @@ import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { authState, updateAuthState } from "../utils/authEvents.js";
 import { authService } from "../services/authService.js";
+import { API_URL } from "../utils/api.js";
 
 const router = useRouter();
 const currentUser = computed(() => authState.value?.user);
@@ -83,7 +84,7 @@ async function handlePasswordChange() {
 			payload.password_confirmation = form.value.password_confirmation;
 		}
 
-		const response = await fetch(`http://localhost:8000/api/users/${currentUser.value.id}`, {
+		const response = await fetch(`${API_URL}/users/${currentUser.value.id}`, {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
