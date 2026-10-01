@@ -1,4 +1,4 @@
-# Déploiement gratuit Render + TiDB
+# Déploiement gratuit Render + TiDB + Supabase Storage
 
 ## Render
 
@@ -9,7 +9,7 @@ Le fichier `render.yaml` configure deux services gratuits:
 
 Le frontend statique est gratuit sur Render. Le backend utilise aussi le compute gratuit, avec la limite classique des services free qui peuvent s'endormir après inactivité.
 
-Pour les médias, le backend utilise un stockage objet S3-compatible gratuit plutôt qu'un disque persistant payant. Le plus simple est d'utiliser un bucket public gratuit chez un fournisseur compatible S3.
+Pour les médias, le backend utilise Supabase Storage via son interface S3-compatible. Le bucket doit être public si tu veux servir les images directement au frontend.
 
 Avant de lancer le blueprint, renseigne les secrets du backend dans Render:
 
@@ -25,9 +25,9 @@ Avant de lancer le blueprint, renseigne les secrets du backend dans Render:
 - `AWS_URL`
 - `AWS_ENDPOINT`
 
-`VITE_API_URL` pointe vers le backend Render. `VITE_STORAGE_URL` pointe vers l'URL publique du bucket objet. Si tu changes le nom du service, mets `VITE_API_URL` à jour.
+`VITE_API_URL` pointe vers le backend Render. `VITE_STORAGE_URL` pointe vers l'URL publique du bucket Supabase. Si tu changes le nom du service, mets `VITE_API_URL` à jour.
 
-`VITE_STORAGE_URL` doit contenir l'URL publique de ton bucket, pas l'URL du backend.
+`VITE_STORAGE_URL` doit contenir l'URL publique du bucket Supabase, pas l'URL du backend.
 
 ## TiDB
 
@@ -52,7 +52,19 @@ DB_USERNAME=...
 DB_PASSWORD=...
 ```
 
+Exemple Supabase Storage:
+
+```dotenv
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=ton-bucket-public
+AWS_ENDPOINT=https://<project-ref>.supabase.co/storage/v1/s3
+AWS_URL=https://<project-ref>.supabase.co/storage/v1/object/public/ton-bucket-public
+AWS_USE_PATH_STYLE_ENDPOINT=true
+```
+
 ## Point important
 
-Le stockage local n'est plus la cible de production. En local, les fichiers passent encore par le disque `public`, mais sur Render les médias doivent aller vers le bucket S3-compatible gratuit que tu renseignes avec les variables AWS ci-dessus.
+Le stockage local n'est plus la cible de production. En local, les fichiers passent encore par le disque `public`, mais sur Render les médias doivent aller vers le bucket Supabase public que tu renseignes avec les variables AWS ci-dessus.
 
