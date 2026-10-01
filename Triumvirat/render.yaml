@@ -13,7 +13,7 @@ services:
       - key: APP_DEBUG
         value: "false"
       - key: APP_URL
-        value: https://triumvirat-backend.onrender.com
+        value: https://triumvirat-backend-w59q.onrender.com
       - key: APP_KEY
         sync: false
       - key: FILESYSTEM_DISK
@@ -56,7 +56,7 @@ services:
     autoDeployTrigger: commit
     envVars:
       - key: VITE_API_URL
-        value: https://triumvirat-backend.onrender.com
+        value: https://triumvirat-backend-w59q.onrender.com
       - key: VITE_STORAGE_URL
         fromService:
           name: triumvirat-backend
