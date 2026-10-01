@@ -13,6 +13,11 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
+    private function storageDisk()
+    {
+        return config('filesystems.default');
+    }
+
     // Affiche la liste des utilisateurs
     public function index()
     {
@@ -21,7 +26,7 @@ class UserController extends Controller
         $users->getCollection()->transform(function ($user) {
             $user->makeHidden(['email', 'password']);
             $user->profile_photo_url = $user->profile_photo_path
-                ? asset('storage/' . $user->profile_photo_path)
+                ? Storage::disk($this->storageDisk())->url($user->profile_photo_path)
                 : null;
             return $user;
         });
@@ -39,7 +44,7 @@ class UserController extends Controller
         }
 
         $user->profile_photo_url = $user->profile_photo_path
-            ? asset('storage/' . $user->profile_photo_path)
+            ? Storage::disk($this->storageDisk())->url($user->profile_photo_path)
             : null;
 
         return response()->json($user);
@@ -101,12 +106,12 @@ class UserController extends Controller
         // Gestion de la photo de profil
         if ($request->hasFile('profile_photo')) {
             if ($user->profile_photo_path) {
-                Storage::disk('public')->delete($user->profile_photo_path);
+                Storage::disk($this->storageDisk())->delete($user->profile_photo_path);
             }
-            $updateData['profile_photo_path'] = $request->file('profile_photo')->store('profiles', 'public');
+            $updateData['profile_photo_path'] = $request->file('profile_photo')->store('profiles', $this->storageDisk());
         } elseif ($request->input('delete_profile_photo') === '1') {
             if ($user->profile_photo_path) {
-                Storage::disk('public')->delete($user->profile_photo_path);
+                Storage::disk($this->storageDisk())->delete($user->profile_photo_path);
             }
             $updateData['profile_photo_path'] = null;
         }
@@ -114,12 +119,12 @@ class UserController extends Controller
         // Gestion de la bannière 
         if ($request->hasFile('cover_image')) {
             if ($user->cover_image_path) {
-                Storage::disk('public')->delete($user->cover_image_path);
+                Storage::disk($this->storageDisk())->delete($user->cover_image_path);
             }
-            $updateData['cover_image_path'] = $request->file('cover_image')->store('covers', 'public');
+            $updateData['cover_image_path'] = $request->file('cover_image')->store('covers', $this->storageDisk());
         } elseif ($request->input('delete_cover_image') === '1') {
             if ($user->cover_image_path) {
-                Storage::disk('public')->delete($user->cover_image_path);
+                Storage::disk($this->storageDisk())->delete($user->cover_image_path);
             }
             $updateData['cover_image_path'] = null;
         }
@@ -166,16 +171,16 @@ class UserController extends Controller
         if ($request->boolean('hard_delete')) {
 
             if ($user->profile_photo_path)
-                Storage::disk('public')->delete($user->profile_photo_path);
+                Storage::disk($this->storageDisk())->delete($user->profile_photo_path);
             if ($user->cover_image_path)
-                Storage::disk('public')->delete($user->cover_image_path);
+                Storage::disk($this->storageDisk())->delete($user->cover_image_path);
 
             // On boucle sur chaque post pour déclencher la suppression de ses médias/commentaires
             $posts = $user->posts()->get();
             foreach ($posts as $post) {
                 // Supprime les images de storage
                 foreach ($post->media as $media) {
-                    Storage::disk('public')->delete($media->url);
+                    Storage::disk($this->storageDisk())->delete($media->url);
                     $media->delete();
                 }
                 // Supprime les commentaires et likes du post

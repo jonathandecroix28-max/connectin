@@ -8,6 +8,11 @@ use App\Http\Requests\StorePostRequest;
 
 class PostController extends Controller
 {
+    private function storageDisk()
+    {
+        return config('filesystems.default');
+    }
+
     public function index()
     {
         $posts = Post::with([
@@ -97,7 +102,7 @@ class PostController extends Controller
 
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('posts', 'public');
+            $path = $request->file('image')->store('posts', $this->storageDisk());
             $post->media()->create([
                 'url' => $path,
                 'type' => 'image'
@@ -127,7 +132,7 @@ class PostController extends Controller
         $this->authorize('delete', $post);
 
         foreach ($post->media as $media) {
-            Storage::disk('public')->delete($media->url);
+            Storage::disk($this->storageDisk())->delete($media->url);
         }
 
         $post->delete();

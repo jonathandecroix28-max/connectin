@@ -4,6 +4,7 @@ services:
     runtime: docker
     rootDir: backend
     dockerfilePath: ./Dockerfile
+    plan: free
     healthCheckPath: /api/ping
     autoDeployTrigger: commit
     envVars:
@@ -15,6 +16,8 @@ services:
         value: https://triumvirat-backend.onrender.com
       - key: APP_KEY
         sync: false
+      - key: FILESYSTEM_DISK
+        value: s3
       - key: DB_CONNECTION
         value: mysql
       - key: DB_HOST
@@ -27,6 +30,20 @@ services:
         sync: false
       - key: DB_PASSWORD
         sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_DEFAULT_REGION
+        sync: false
+      - key: AWS_BUCKET
+        sync: false
+      - key: AWS_URL
+        sync: false
+      - key: AWS_ENDPOINT
+        sync: false
+      - key: AWS_USE_PATH_STYLE_ENDPOINT
+        value: "true"
 
   - type: web
     name: triumvirat-frontend
@@ -39,4 +56,7 @@ services:
       - key: VITE_API_URL
         value: https://triumvirat-backend.onrender.com
       - key: VITE_STORAGE_URL
-        value: https://triumvirat-backend.onrender.com
+        fromService:
+          name: triumvirat-backend
+          type: web
+          envVarKey: AWS_URL

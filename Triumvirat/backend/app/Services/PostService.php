@@ -21,7 +21,7 @@ class PostService
 
             // Gestion des médias
             foreach ($files as $file) {
-                $path = $file->store('posts/media', 'public');
+                $path = $file->store('posts/media', config('filesystems.default'));
                 
                 $post->media()->create([
                     'url' => $path,
