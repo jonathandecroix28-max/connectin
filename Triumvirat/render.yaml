@@ -3,7 +3,7 @@ services:
     name: triumvirat-backend
     runtime: docker
     rootDir: Triumvirat/backend
-    dockerfilePath: Triumvirat/backend/Dockerfile
+    dockerfilePath: ./Dockerfile
     plan: free
     healthCheckPath: /api/ping
     autoDeployTrigger: commit
