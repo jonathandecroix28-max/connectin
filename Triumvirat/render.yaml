@@ -2,8 +2,8 @@ services:
   - type: web
     name: triumvirat-backend
     runtime: docker
-    rootDir: backend
-    dockerfilePath: ./Dockerfile
+    rootDir: Triumvirat/backend
+    dockerfilePath: Triumvirat/backend/Dockerfile
     plan: free
     healthCheckPath: /api/ping
     autoDeployTrigger: commit
@@ -48,7 +48,7 @@ services:
   - type: web
     name: triumvirat-frontend
     runtime: static
-    rootDir: frontend
+    rootDir: Triumvirat/frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
     autoDeployTrigger: commit
