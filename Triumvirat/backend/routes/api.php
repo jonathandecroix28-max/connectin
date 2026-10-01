@@ -12,9 +12,7 @@ use App\Http\Controllers\Api\AuthController;
 //  ROUTES PUBLIQUES Test API
 Route::get('/ping', function () {
     return response()->json([
-        'status' => 'ok',
-        'message' => 'L\'API fonctionne parfaitement !',
-        'timestamp' => now()
+        'ok' => true,
     ]);
 });
 
